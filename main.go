@@ -36,7 +36,7 @@ func main() {
 	// 不要遗漏2个 db的close
 
 	// 初始化mysql
-	if err := mysql.Init(); err != nil {
+	if err := mysql.Init(setting.Config.MysqlConfig); err != nil {
 		fmt.Printf("init mysql failed:%s \n", err)
 		return
 	}
