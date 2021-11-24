@@ -23,3 +23,7 @@ func Init() error {
 	_, err := rdb.Ping().Result()
 	return err
 }
+
+func Close() {
+	_ = rdb.Close()
+}

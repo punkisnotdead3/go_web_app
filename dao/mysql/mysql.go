@@ -13,6 +13,10 @@ import (
 
 var db *sqlx.DB
 
+func Close() {
+	_ = db.Close()
+}
+
 func Init() (err error) {
 	dsn := fmt.Sprintf("%s:%s@tcp(%s:%d)/%s?charset=utf8mb4&parseTime=True",
 		viper.GetString("mysql.user"), viper.GetString("mysql.password"),

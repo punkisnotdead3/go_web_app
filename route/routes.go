@@ -9,6 +9,7 @@ import (
 
 func Setup() *gin.Engine {
 	r := gin.New()
+	// 最重要的就是这个日志库
 	r.Use(logger.GinLogger(), logger.GinRecovery(true))
 	r.GET("/", func(context *gin.Context) {
 		context.String(http.StatusOK, "ok")
