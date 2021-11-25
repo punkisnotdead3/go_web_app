@@ -2,6 +2,7 @@ package main
 
 import (
 	"context"
+	"flag"
 	"fmt"
 	"go_web_app/dao/mysql"
 	"go_web_app/dao/redis"
@@ -19,8 +20,13 @@ import (
 )
 
 func main() {
+
+	filePath := ""
+	// 第二个参数 就是命令行的-x  第三个是默认值 第四个是-h的时候的说明
+	flag.StringVar(&filePath, "file", "", "配置文件地址")
+	flag.Parse()
 	// 加载配置文件
-	if err := setting.Init(); err != nil {
+	if err := setting.Init(filePath); err != nil {
 		fmt.Printf("init settings failed:%s \n", err)
 		return
 	}

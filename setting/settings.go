@@ -11,12 +11,18 @@ import (
 var Config = new(AppConfig)
 
 // Init 加载配置文件
-func Init() error {
-	viper.SetConfigName("config") // 配置文件的名称
-	viper.SetConfigType("yaml")   // 配置文件的扩展名，这里除了json还可以有yaml等格式
-	// 这个配置可以有多个，主要是告诉viper 去哪个地方找配置文件
-	// 我们这里就是简单配置下 在当前工作目录下 找配置即可
-	viper.AddConfigPath(".")
+func Init(filePath string) error {
+	// 如果设置filepath就直接使用 否则用当前目录的
+	if len(filePath) == 0 {
+		viper.SetConfigName("config") // 配置文件的名称
+		viper.SetConfigType("yaml")   // 配置文件的扩展名，这里除了json还可以有yaml等格式
+		// 这个配置可以有多个，主要是告诉viper 去哪个地方找配置文件
+		// 我们这里就是简单配置下 在当前工作目录下 找配置即可
+		viper.AddConfigPath(".")
+	} else {
+		viper.SetConfigFile(filePath)
+	}
+
 	err := viper.ReadInConfig()
 	if err != nil {
 		fmt.Println("viper init failed:", err)
