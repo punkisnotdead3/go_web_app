@@ -1,7 +1,6 @@
-app:
-  name: "web_app"
-  mode: "dev"
-  port: 8071
+name: "web_app"
+mode: "dev"
+port: 8016
 log:
   level: "debug"
   filename: "web_app.log"

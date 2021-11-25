@@ -1,6 +1,7 @@
 package logger
 
 import (
+	"go_web_app/setting"
 	"net"
 	"net/http"
 	"net/http/httputil"
@@ -8,8 +9,6 @@ import (
 	"runtime/debug"
 	"strings"
 	"time"
-
-	"github.com/spf13/viper"
 
 	"github.com/gin-gonic/gin"
 
@@ -21,14 +20,14 @@ import (
 var lg *zap.Logger
 
 // Init InitLogger 初始化Logger
-func Init() (err error) {
+func Init(config *setting.LogConfig) (err error) {
 	// 这里直接用viper来读取对应配置文件的参数 即可
-	writeSyncer := getLogWriter(viper.GetString("log.filename"),
-		viper.GetInt("log.max_size"), viper.GetInt("log.max_backups"),
-		viper.GetInt("log.max_age"))
+	writeSyncer := getLogWriter(config.FileName,
+		config.MaxSize, config.MaxBackups,
+		config.MaxAge)
 	encoder := getEncoder()
 	var l = new(zapcore.Level)
-	err = l.UnmarshalText([]byte(viper.GetString("log.level")))
+	err = l.UnmarshalText([]byte(config.Level))
 	if err != nil {
 		return
 	}
