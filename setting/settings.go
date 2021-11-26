@@ -43,6 +43,8 @@ type AppConfig struct {
 	Name         string `mapstructure:"name"`
 	Mode         string `mapstructure:"mode"`
 	Port         int    `mapstructure:"port"`
+	StartTime    string `mapstructure:"start_time"`
+	MachineId    int64  `mapstructure:"machineID"`
 	*LogConfig   `mapstructure:"log"`
 	*MysqlConfig `mapstructure:"mysql"`
 	*RedisConfig `mapstructure:"redis"`

@@ -7,6 +7,7 @@ import (
 	"go_web_app/dao/mysql"
 	"go_web_app/dao/redis"
 	"go_web_app/logger"
+	"go_web_app/pkg/snowflake"
 	"go_web_app/route"
 	"go_web_app/setting"
 	"log"
@@ -48,6 +49,11 @@ func main() {
 	// 初始化redis
 	if err := redis.Init(setting.Config.RedisConfig); err != nil {
 		fmt.Printf("init redis failed:%s \n", err)
+		return
+	}
+
+	if err := snowflake.Init(setting.Config.StartTime, setting.Config.MachineId); err != nil {
+		fmt.Printf("init snowflake node failed:%s \n", err)
 		return
 	}
 

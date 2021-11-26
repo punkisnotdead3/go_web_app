@@ -1,6 +1,8 @@
 name: "web_app"
 mode: "dev"
 port: 8016
+start_time: 2021-11-26
+machineID: 1
 log:
   level: "debug"
   filename: "web_app.log"
