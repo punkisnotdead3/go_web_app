@@ -2,6 +2,7 @@ package mysql
 
 import (
 	"crypto/md5"
+	"database/sql"
 	"encoding/hex"
 	"errors"
 	"go_web_app/models"
@@ -21,6 +22,23 @@ func InsertUser(user *models.User) error {
 	if err != nil {
 		zap.L().Error("InsertUser dn error", zap.Error(err))
 		return err
+	}
+	return nil
+}
+
+//
+func Login(user *models.User) error {
+	oldPassword := user.Password
+	sqlStr := `select user_id,username,password from user where username=?`
+	err := db.Get(user, sqlStr, user.Username)
+	if err == sql.ErrNoRows {
+		return errors.New("该用户不存在")
+	}
+	if err != nil {
+		return err
+	}
+	if encryptPassword(oldPassword) != user.Password {
+		return errors.New("密码不正确")
 	}
 	return nil
 }

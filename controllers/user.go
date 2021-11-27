@@ -12,6 +12,39 @@ import (
 	"github.com/gin-gonic/gin"
 )
 
+func LoginHandler(c *gin.Context) {
+	p := new(models.ParamLogin)
+
+	if err := c.ShouldBindJSON(p); err != nil {
+		zap.L().Error("LoginHandler with invalid param", zap.Error(err))
+		// 因为有的错误 比如json格式不对的错误 是不属于validator错误的 自然无法翻译，所以这里要做类型判断
+		errs, ok := err.(validator.ValidationErrors)
+		if !ok {
+			c.JSON(http.StatusOK, gin.H{
+				"msg": err.Error(),
+			})
+		} else {
+			c.JSON(http.StatusOK, gin.H{
+				"msg": removeTopStruct(errs.Translate(trans)),
+			})
+		}
+		return
+	}
+
+	// 业务处理
+	err := logic.Login(p)
+	if err != nil {
+		// 可以在日志中 看出 到底是哪些用户不存在
+		zap.L().Error("login failed", zap.String("username", p.UserName), zap.Error(err))
+		c.JSON(http.StatusOK, gin.H{
+			"msg": "用户名或密码不正确",
+		})
+		return
+	}
+	// 返回响应
+	c.JSON(http.StatusOK, "login success")
+}
+
 func RegisterHandler(c *gin.Context) {
 	// 获取参数和参数校验
 	p := new(models.ParamRegister)
@@ -34,6 +67,7 @@ func RegisterHandler(c *gin.Context) {
 	// 业务处理
 	err := logic.Register(p)
 	if err != nil {
+		zap.L().Error("register failed", zap.String("username", p.UserName), zap.Error(err))
 		c.JSON(http.StatusOK, gin.H{
 			"msg": err.Error(),
 		})

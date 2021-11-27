@@ -8,6 +8,14 @@ import (
 	"go_web_app/pkg/snowflake"
 )
 
+func Login(login *models.ParamLogin) error {
+	user := models.User{
+		Username: login.UserName,
+		Password: login.Password,
+	}
+	return mysql.Login(&user)
+}
+
 func Register(register *models.ParamRegister) (err error) {
 	// 判断用户是否存在
 	err = mysql.CheckUserExist(register.UserName)

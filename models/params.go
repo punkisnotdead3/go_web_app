@@ -8,3 +8,8 @@ type ParamRegister struct {
 	// eqfield 指定必须相等的字段
 	RePassword string `json:"re_password" binding:"required,eqfield=Password"`
 }
+
+type ParamLogin struct {
+	UserName string `json:"username" binding:"required"`
+	Password string `json:"password" binding:"required"`
+}

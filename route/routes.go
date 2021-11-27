@@ -17,6 +17,8 @@ func Setup(mode string) *gin.Engine {
 	r.Use(logger.GinLogger(), logger.GinRecovery(true))
 	// 注册
 	r.POST("/register", controllers.RegisterHandler)
+	// 登录
+	r.POST("/login", controllers.LoginHandler)
 	r.GET("/", func(context *gin.Context) {
 		context.String(http.StatusOK, "ok")
 	})
