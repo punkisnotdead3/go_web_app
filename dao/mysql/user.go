@@ -12,6 +12,13 @@ import (
 
 const serect = "wuyue.com"
 
+// 定义 error的常量方便判断
+var (
+	UserAleadyExists = errors.New("用户已存在")
+	WrongPassword    = errors.New("密码不正确")
+	UserNoExists     = errors.New("用户不存在")
+)
+
 // dao层 其实就是将数据库操作 封装为函数 等待logic层 去调用她
 
 func InsertUser(user *models.User) error {
@@ -32,13 +39,13 @@ func Login(user *models.User) error {
 	sqlStr := `select user_id,username,password from user where username=?`
 	err := db.Get(user, sqlStr, user.Username)
 	if err == sql.ErrNoRows {
-		return errors.New("该用户不存在")
+		return UserNoExists
 	}
 	if err != nil {
 		return err
 	}
 	if encryptPassword(oldPassword) != user.Password {
-		return errors.New("密码不正确")
+		return WrongPassword
 	}
 	return nil
 }
@@ -53,7 +60,7 @@ func CheckUserExist(username string) error {
 		return err
 	}
 	if count > 0 {
-		return errors.New("用户已存在")
+		return UserAleadyExists
 	}
 	return nil
 }

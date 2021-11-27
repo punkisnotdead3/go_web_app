@@ -1,9 +1,10 @@
 package controllers
 
 import (
+	"errors"
+	"go_web_app/dao/mysql"
 	"go_web_app/logic"
 	"go_web_app/models"
-	"net/http"
 
 	"github.com/go-playground/validator/v10"
 
@@ -20,13 +21,9 @@ func LoginHandler(c *gin.Context) {
 		// 因为有的错误 比如json格式不对的错误 是不属于validator错误的 自然无法翻译，所以这里要做类型判断
 		errs, ok := err.(validator.ValidationErrors)
 		if !ok {
-			c.JSON(http.StatusOK, gin.H{
-				"msg": err.Error(),
-			})
+			ResponseError(c, CodeInvalidParam)
 		} else {
-			c.JSON(http.StatusOK, gin.H{
-				"msg": removeTopStruct(errs.Translate(trans)),
-			})
+			ResponseErrorWithMsg(c, CodeInvalidParam, removeTopStruct(errs.Translate(trans)))
 		}
 		return
 	}
@@ -36,13 +33,14 @@ func LoginHandler(c *gin.Context) {
 	if err != nil {
 		// 可以在日志中 看出 到底是哪些用户不存在
 		zap.L().Error("login failed", zap.String("username", p.UserName), zap.Error(err))
-		c.JSON(http.StatusOK, gin.H{
-			"msg": "用户名或密码不正确",
-		})
+		if errors.Is(err, mysql.WrongPassword) {
+			ResponseError(c, CodeInvalidPassword)
+		} else {
+			ResponseError(c, CodeServerBusy)
+		}
 		return
 	}
-	// 返回响应
-	c.JSON(http.StatusOK, "login success")
+	ResponseSuccess(c, "login success")
 }
 
 func RegisterHandler(c *gin.Context) {
@@ -54,13 +52,9 @@ func RegisterHandler(c *gin.Context) {
 		// 因为有的错误 比如json格式不对的错误 是不属于validator错误的 自然无法翻译，所以这里要做类型判断
 		errs, ok := err.(validator.ValidationErrors)
 		if !ok {
-			c.JSON(http.StatusOK, gin.H{
-				"msg": err.Error(),
-			})
+			ResponseError(c, CodeInvalidParam)
 		} else {
-			c.JSON(http.StatusOK, gin.H{
-				"msg": removeTopStruct(errs.Translate(trans)),
-			})
+			ResponseErrorWithMsg(c, CodeInvalidParam, removeTopStruct(errs.Translate(trans)))
 		}
 		return
 	}
@@ -68,11 +62,13 @@ func RegisterHandler(c *gin.Context) {
 	err := logic.Register(p)
 	if err != nil {
 		zap.L().Error("register failed", zap.String("username", p.UserName), zap.Error(err))
-		c.JSON(http.StatusOK, gin.H{
-			"msg": err.Error(),
-		})
+		if errors.Is(err, mysql.UserAleadyExists) {
+			ResponseError(c, CodeUserExist)
+		} else {
+			ResponseError(c, CodeInvalidParam)
+		}
 		return
 	}
 	// 返回响应
-	c.JSON(http.StatusOK, "register success")
+	ResponseSuccess(c, "register success")
 }
