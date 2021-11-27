@@ -36,7 +36,7 @@ func RegisterHandler(c *gin.Context) {
 	err := logic.Register(p)
 	if err != nil {
 		c.JSON(http.StatusOK, gin.H{
-			"msg": "注册失败",
+			"msg": err.Error(),
 		})
 		return
 	}
