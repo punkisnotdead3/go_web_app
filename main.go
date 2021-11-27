@@ -4,6 +4,7 @@ import (
 	"context"
 	"flag"
 	"fmt"
+	"go_web_app/controllers"
 	"go_web_app/dao/mysql"
 	"go_web_app/dao/redis"
 	"go_web_app/logger"
@@ -60,6 +61,13 @@ func main() {
 	defer mysql.Close()
 	defer redis.Close()
 	zap.L().Debug("redis init success")
+
+	// 初始化validator的 trans为中文
+	if err := controllers.InitTrans("zh"); err != nil {
+		fmt.Printf("init translation  failed:%s \n", err)
+		return
+	}
+
 	// 注册路由
 	r := route.Setup()
 	// 启动服务 （优雅关机）
