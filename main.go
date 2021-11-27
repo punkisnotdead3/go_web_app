@@ -52,7 +52,7 @@ func main() {
 		fmt.Printf("init redis failed:%s \n", err)
 		return
 	}
-
+	zap.L().Debug("redis init success")
 	if err := snowflake.Init(setting.Config.StartTime, setting.Config.MachineId); err != nil {
 		fmt.Printf("init snowflake node failed:%s \n", err)
 		return
@@ -60,7 +60,6 @@ func main() {
 
 	defer mysql.Close()
 	defer redis.Close()
-	zap.L().Debug("redis init success")
 
 	// 初始化validator的 trans为中文
 	if err := controllers.InitTrans("zh"); err != nil {

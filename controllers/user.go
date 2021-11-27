@@ -32,16 +32,15 @@ func RegisterHandler(c *gin.Context) {
 		}
 		return
 	}
-	// 进行参数校验
-	//if p.RePassword != p.Password {
-	//	c.JSON(http.StatusOK, gin.H{
-	//		"msg": "密码和确认密码不同",
-	//	})
-	//	return
-	//}
-	fmt.Println(p)
 	// 业务处理
-	logic.Register(p)
+	err := logic.Register(p)
+	if err != nil {
+		c.JSON(http.StatusOK, gin.H{
+			"msg": "注册失败",
+		})
+		return
+	}
+	fmt.Println("register db校验ok")
 	// 返回响应
 	c.JSON(http.StatusOK, "register success")
 }
