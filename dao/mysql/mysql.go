@@ -25,7 +25,7 @@ func Init(config *setting.MysqlConfig) (err error) {
 		config.DbName,
 	)
 	// 也可以使用MustConnect连接不成功就panic
-	db, err := sqlx.Connect("mysql", dsn)
+	db, err = sqlx.Connect("mysql", dsn)
 	if err != nil {
 		zap.L().Error("connect DB failed, err:%v\n", zap.Error(err))
 		return
