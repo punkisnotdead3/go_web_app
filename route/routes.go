@@ -7,7 +7,10 @@ import (
 	"github.com/gin-gonic/gin"
 )
 
-func Setup() *gin.Engine {
+func Setup(mode string) *gin.Engine {
+	if mode == gin.ReleaseMode {
+		gin.SetMode(mode)
+	}
 	r := gin.New()
 	// 最重要的就是这个日志库
 	r.Use(logger.GinLogger(), logger.GinRecovery(true))
