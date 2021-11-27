@@ -1,7 +1,6 @@
 package controllers
 
 import (
-	"fmt"
 	"go_web_app/logic"
 	"go_web_app/models"
 	"net/http"
@@ -40,7 +39,6 @@ func RegisterHandler(c *gin.Context) {
 		})
 		return
 	}
-	fmt.Println("register db校验ok")
 	// 返回响应
 	c.JSON(http.StatusOK, "register success")
 }

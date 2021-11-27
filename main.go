@@ -15,6 +15,7 @@ import (
 	"net/http"
 	"os"
 	"os/signal"
+	"strconv"
 	"syscall"
 	"time"
 
@@ -33,7 +34,7 @@ func main() {
 		return
 	}
 	// 初始化日志
-	if err := logger.Init(setting.Config.LogConfig); err != nil {
+	if err := logger.Init(setting.Config.LogConfig, setting.Config.Mode); err != nil {
 		fmt.Printf("init settings failed:%s \n", err)
 		return
 	}
@@ -68,9 +69,10 @@ func main() {
 	}
 
 	// 注册路由
-	r := route.Setup()
+	r := route.Setup(setting.Config.Mode)
 	// 启动服务 （优雅关机）
-	fmt.Println("port:", setting.Config.Port)
+	//fmt.Println("port:", )
+	zap.L().Debug("server listen", zap.String("port", strconv.Itoa(setting.Config.Port)))
 	srv := &http.Server{
 		Addr:    fmt.Sprintf(":%d", setting.Config.Port),
 		Handler: r,

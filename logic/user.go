@@ -15,8 +15,9 @@ func Register(register *models.ParamRegister) (err error) {
 		// db 出错
 		return err
 	}
+	// 生成userid
 	userId := snowflake.GenId()
-	// 构造一个User
+	// 构造一个User db对象
 	user := models.User{
 		UserId:   userId,
 		Username: register.UserName,

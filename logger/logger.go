@@ -20,7 +20,7 @@ import (
 var lg *zap.Logger
 
 // Init InitLogger 初始化Logger
-func Init(config *setting.LogConfig) (err error) {
+func Init(config *setting.LogConfig, mode string) (err error) {
 	// 这里直接用viper来读取对应配置文件的参数 即可
 	writeSyncer := getLogWriter(config.FileName,
 		config.MaxSize, config.MaxBackups,
@@ -31,7 +31,17 @@ func Init(config *setting.LogConfig) (err error) {
 	if err != nil {
 		return
 	}
-	core := zapcore.NewCore(encoder, writeSyncer, l)
+	var core zapcore.Core
+	if mode == "dev" {
+		// 开发模式 日志输出到终端
+		core = zapcore.NewTee(
+			zapcore.NewCore(encoder, writeSyncer, l),
+			zapcore.NewCore(zapcore.NewConsoleEncoder(zap.NewDevelopmentEncoderConfig()),
+				zapcore.Lock(os.Stdout), zapcore.DebugLevel),
+		)
+	} else {
+		core = zapcore.NewCore(encoder, writeSyncer, l)
+	}
 
 	lg = zap.New(core, zap.AddCaller())
 	zap.ReplaceGlobals(lg) // 替换zap包中全局的logger实例，后续在其他包中只需使用zap.L()调用即可
