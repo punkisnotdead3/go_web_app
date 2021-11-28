@@ -8,9 +8,6 @@ import (
 	"go.uber.org/zap"
 )
 
-const ContextUserNameKey = "username"
-const ContextUserIdKey = "userid"
-
 func JWTAuthMiddleWare() func(context *gin.Context) {
 	return func(context *gin.Context) {
 		token := context.Request.Header.Get("auth-token")
@@ -29,8 +26,8 @@ func JWTAuthMiddleWare() func(context *gin.Context) {
 
 		// 当token合法的时候 我们可以把对应的关键信息 取出来放到context里面，则对应的路由就可以直接通过get的方法 取出关键信息了
 		zap.L().Debug("token parse", zap.String("username", parseToken.UserName))
-		context.Set(ContextUserNameKey, parseToken.UserName)
-		context.Set(ContextUserIdKey, parseToken.UserId)
+		context.Set(controllers.ContextUserNameKey, parseToken.UserName)
+		context.Set(controllers.ContextUserIdKey, parseToken.UserId)
 		context.Next()
 	}
 }

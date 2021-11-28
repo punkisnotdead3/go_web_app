@@ -2,17 +2,19 @@ package controllers
 
 import (
 	"errors"
-	"go_web_app/middleware"
 
 	"github.com/gin-gonic/gin"
 )
+
+const ContextUserNameKey = "username"
+const ContextUserIdKey = "userid"
 
 var (
 	ErrorNotLogin = errors.New("no login")
 )
 
 func getCurrentUserId(c *gin.Context) (int64, error) {
-	userId, ok := c.Get(middleware.ContextUserIdKey)
+	userId, ok := c.Get(ContextUserIdKey)
 	if !ok {
 		return 0, ErrorNotLogin
 	}
@@ -20,7 +22,7 @@ func getCurrentUserId(c *gin.Context) (int64, error) {
 }
 
 func getCurrentUserName(c *gin.Context) (string, error) {
-	userName, ok := c.Get(middleware.ContextUserIdKey)
+	userName, ok := c.Get(ContextUserIdKey)
 	if !ok {
 		return "", ErrorNotLogin
 	}
