@@ -3,7 +3,7 @@ package route
 import (
 	"go_web_app/controllers"
 	"go_web_app/logger"
-	"go_web_app/pkg/jwt"
+	"go_web_app/middleware"
 	"net/http"
 
 	"go.uber.org/zap"
@@ -24,20 +24,9 @@ func Setup(mode string) *gin.Engine {
 	r.POST("/login", controllers.LoginHandler)
 
 	//验证jwt机制
-	r.GET("/ping", func(context *gin.Context) {
+	r.GET("/ping", middleware.JWTAuthMiddleWare(), func(context *gin.Context) {
 		// 这里post man 模拟的 将token auth-token
-		token := context.Request.Header.Get("auth-token")
-		if token == "" {
-			controllers.ResponseError(context, controllers.CodeTokenIsEmpty)
-			return
-		}
-		parseToken, err := jwt.ParseToken(token)
-		if err != nil {
-			controllers.ResponseError(context, controllers.CodeTokenInvalid)
-			return
-		}
-
-		zap.L().Debug("token parese", zap.String("username", parseToken.UserName))
+		zap.L().Debug("ping", zap.String("ping-username", context.GetString("username")))
 		controllers.ResponseSuccess(context, "pong")
 	})
 
