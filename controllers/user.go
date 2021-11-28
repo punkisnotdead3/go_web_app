@@ -29,7 +29,7 @@ func LoginHandler(c *gin.Context) {
 	}
 
 	// 业务处理
-	err := logic.Login(p)
+	token, err := logic.Login(p)
 	if err != nil {
 		// 可以在日志中 看出 到底是哪些用户不存在
 		zap.L().Error("login failed", zap.String("username", p.UserName), zap.Error(err))
@@ -40,7 +40,7 @@ func LoginHandler(c *gin.Context) {
 		}
 		return
 	}
-	ResponseSuccess(c, "login success")
+	ResponseSuccess(c, token)
 }
 
 func RegisterHandler(c *gin.Context) {

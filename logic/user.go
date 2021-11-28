@@ -5,15 +5,19 @@ package logic
 import (
 	"go_web_app/dao/mysql"
 	"go_web_app/models"
+	"go_web_app/pkg/jwt"
 	"go_web_app/pkg/snowflake"
 )
 
-func Login(login *models.ParamLogin) error {
+func Login(login *models.ParamLogin) (string, error) {
 	user := models.User{
 		Username: login.UserName,
 		Password: login.Password,
 	}
-	return mysql.Login(&user)
+	if err := mysql.Login(&user); err != nil {
+		return "", err
+	}
+	return jwt.GenToken(user.Username, user.UserId)
 }
 
 func Register(register *models.ParamRegister) (err error) {
