@@ -28,6 +28,7 @@ func Setup(mode string) *gin.Engine {
 	v1.POST("/login", controllers.LoginHandler)
 
 	v1.GET("/community", controllers.CommunityHandler)
+	v1.GET("/community/:id", controllers.CommunityDetailHandler)
 
 	//验证jwt机制
 	v1.GET("/ping", middleware.JWTAuthMiddleWare(), func(context *gin.Context) {
