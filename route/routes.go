@@ -18,13 +18,19 @@ func Setup(mode string) *gin.Engine {
 	r := gin.New()
 	// 最重要的就是这个日志库
 	r.Use(logger.GinLogger(), logger.GinRecovery(true))
+
+	//v1 版本的路由
+	v1 := r.Group("/api/v1")
+
 	// 注册
-	r.POST("/register", controllers.RegisterHandler)
+	v1.POST("/register", controllers.RegisterHandler)
 	// 登录
-	r.POST("/login", controllers.LoginHandler)
+	v1.POST("/login", controllers.LoginHandler)
+
+	v1.GET("/community", controllers.CommunityHandler)
 
 	//验证jwt机制
-	r.GET("/ping", middleware.JWTAuthMiddleWare(), func(context *gin.Context) {
+	v1.GET("/ping", middleware.JWTAuthMiddleWare(), func(context *gin.Context) {
 		// 这里post man 模拟的 将token auth-token
 		zap.L().Debug("ping", zap.String("ping-username", context.GetString("username")))
 		controllers.ResponseSuccess(context, "pong")
