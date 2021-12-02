@@ -7,8 +7,8 @@ import (
 	"go.uber.org/zap"
 )
 
-func GetPostDetail(id int64) (apiPostDetail *models.ApiPostDetail, err error) {
-	post := new(models.Post)
+func GetPostDetail(id int64) (post *models.Post, err error) {
+	post = new(models.Post)
 	sqlStr := "select post_id,title,content,author_id,community_id,create_time,update_time " +
 		" from post where post_id=?"
 	err = db.Get(post, sqlStr, id)
@@ -19,24 +19,7 @@ func GetPostDetail(id int64) (apiPostDetail *models.ApiPostDetail, err error) {
 			err = nil
 		}
 	}
-
-	username, err := GetUserNameById(post.AuthorId)
-	if err != nil {
-		zap.L().Warn("no author ")
-		err = nil
-	}
-	community, err := GetCommunityById(post.CommunityId)
-	if err != nil {
-		zap.L().Warn("no community ")
-		err = nil
-	}
-	apiPostDetail = new(models.ApiPostDetail)
-	apiPostDetail.AuthorName = username
-
-	apiPostDetail.Community = community
-	apiPostDetail.Post = post
-
-	return apiPostDetail, err
+	return post, err
 }
 
 func InsertPost(post *models.Post) error {
