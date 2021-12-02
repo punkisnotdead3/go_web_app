@@ -10,6 +10,36 @@ import (
 	"go.uber.org/zap"
 )
 
+func GetPostListHandler(c *gin.Context) {
+	pageSizeStr := c.Query("pageSize")
+	pageNumStr := c.Query("pageNum")
+
+	pageSize, err := strconv.ParseInt(pageSizeStr, 10, 64)
+	if err != nil {
+		ResponseError(c, CodeInvalidParam)
+		return
+	}
+
+	pageNum, err := strconv.ParseInt(pageNumStr, 10, 64)
+	if err != nil {
+		ResponseError(c, CodeInvalidParam)
+		return
+	}
+
+	if pageNum < 1 {
+		ResponseErrorWithMsg(c, CodeInvalidParam, "页码不可小于1")
+		return
+	}
+
+	data, err := logic.GetPostList(pageSize, pageNum)
+	if err != nil {
+		zap.L().Error("GetPostDetailHandler", zap.Error(err))
+		ResponseError(c, CodeServerBusy)
+		return
+	}
+	ResponseSuccess(c, data)
+}
+
 // 获取帖子详情
 func GetPostDetailHandler(c *gin.Context) {
 	postIdStr := c.Param("id")

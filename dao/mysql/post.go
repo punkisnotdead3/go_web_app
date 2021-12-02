@@ -3,9 +3,23 @@ package mysql
 import (
 	"database/sql"
 	"go_web_app/models"
+	"strconv"
 
 	"go.uber.org/zap"
 )
+
+func GetPostList(offset int64, pageSize int64) (posts []*models.Post, err error) {
+	zap.L().Info("GetPostList", zap.String("offset", strconv.FormatInt(offset, 10)), zap.String("pageSize", strconv.FormatInt(pageSize, 10)))
+	sqlStr := "select post_id,title,content,author_id,community_id,create_time,update_time " +
+		" from post limit ?,?"
+	posts = make([]*models.Post, 0, pageSize)
+	err = db.Select(&posts, sqlStr, offset, pageSize)
+	if err != nil {
+		return nil, err
+	}
+	return posts, err
+
+}
 
 func GetPostDetail(id int64) (post *models.Post, err error) {
 	post = new(models.Post)
