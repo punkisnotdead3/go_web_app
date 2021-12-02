@@ -3,12 +3,33 @@ package controllers
 import (
 	"go_web_app/logic"
 	"go_web_app/models"
+	"strconv"
 
 	"github.com/gin-gonic/gin"
 	"github.com/go-playground/validator/v10"
 	"go.uber.org/zap"
 )
 
+// 获取帖子详情
+func GetPostDetailHandler(c *gin.Context) {
+	postIdStr := c.Param("id")
+	postId, err := strconv.ParseInt(postIdStr, 10, 64)
+	// 校验参数是否正确
+	if err != nil {
+		zap.L().Error("GetPostDetailHandler", zap.Error(err))
+		ResponseError(c, CodeInvalidParam)
+		return
+	}
+	data, err := logic.GetPostDetail(postId)
+	if err != nil {
+		zap.L().Error("GetPostDetailHandler", zap.Error(err))
+		ResponseError(c, CodeServerBusy)
+		return
+	}
+	ResponseSuccess(c, data)
+}
+
+// 发帖
 func CreatePostHandler(c *gin.Context) {
 	// 获取参数和参数校验
 	p := new(models.Post)

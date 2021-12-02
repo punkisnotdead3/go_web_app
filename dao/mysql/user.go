@@ -19,6 +19,13 @@ var (
 	UserNoExists     = errors.New("用户不存在")
 )
 
+func GetUserNameById(id int64) (username string, err error) {
+	sqlStr := "select username " +
+		" from user where user_id=?"
+	err = db.Get(&username, sqlStr, id)
+	return username, err
+}
+
 // dao层 其实就是将数据库操作 封装为函数 等待logic层 去调用她
 
 func InsertUser(user *models.User) error {

@@ -14,3 +14,8 @@ func GetCommunityById(id int64) (model *models.Community, err error) {
 	return mysql.GetCommunityById(id)
 
 }
+
+func GetPostDetail(id int64) (apiPostDetail *models.ApiPostDetail, err error) {
+	return mysql.GetPostDetail(id)
+
+}
