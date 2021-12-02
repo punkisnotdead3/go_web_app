@@ -2,6 +2,7 @@ package models
 
 import (
 	"fmt"
+	"math"
 	"testing"
 	"unsafe"
 )
@@ -16,6 +17,10 @@ type P2 struct {
 	a int8
 	c int8
 	b string
+}
+
+func TestInt64(t *testing.T) {
+	fmt.Println("max:", math.MaxInt64)
 }
 
 func TestPP(t *testing.T) {
