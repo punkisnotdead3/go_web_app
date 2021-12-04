@@ -36,6 +36,9 @@ func Setup(mode string) *gin.Engine {
 
 	v1.GET("/postlist", controllers.GetPostListHandler)
 
+	// 最新或者最热列表
+	v1.GET("/postlist2", controllers.GetPostListHandler2)
+
 	v1.POST("/like/", middleware.JWTAuthMiddleWare(), controllers.PostLikeHandler)
 
 	//验证jwt机制

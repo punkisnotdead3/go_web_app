@@ -27,7 +27,17 @@ type ParamLikeData struct {
 	Direction int64 `json:"direction,string" binding:"required,oneof=1 -1"`
 }
 
+type ParamListData struct {
+	PageSize int64  `form:"pageSize" binding:"required"`
+	PageNum  int64  `form:"pageNum" binding:"required"`
+	Order    string `form:"order" binding:"required,oneof=time hot"`
+}
+
 const (
 	DirectionLike   = 1
 	DirectionUnLike = -1
+	// 按照帖子时间排序
+	OrderByTime = "time"
+	// 按照点赞数量排序
+	OrderByHot = "hot"
 )

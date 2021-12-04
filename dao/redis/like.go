@@ -14,6 +14,31 @@ func getRedisKeyForLikeUserSet(postId int64) string {
 	return key
 }
 
+//
+func GetPostIdsByScore(pageSize int64, pageNum int64) (ids []string, err error) {
+	start := (pageNum - 1) * pageSize
+	stop := start + pageSize - 1
+	ids, err = rdb.ZRevRange(KeyLikeNumberZSet, start, stop).Result()
+	if err != nil {
+		zap.L().Error("GetPostIdsByScore", zap.Error(err))
+		return nil, err
+	}
+	return ids, err
+}
+
+// AddPost 每次发表帖子成功 都去 zset里面 新增一条记录
+func AddPost(postId int64) error {
+	_, err := rdb.ZAdd(KeyLikeNumberZSet, redis.Z{
+		Score:  0,
+		Member: utils.Int64ToString(postId),
+	}).Result()
+	if err != nil {
+		zap.L().Error("AddPost", zap.Error(err))
+		return err
+	}
+	return nil
+}
+
 // CheckLike 判断之前有没有投过票 true 代表之前 投过 false 代表之前没有投过
 func CheckLike(postId int64, userId int64) (int64, bool) {
 	like := rdb.ZScore(getRedisKeyForLikeUserSet(postId), utils.Int64ToString(userId))
