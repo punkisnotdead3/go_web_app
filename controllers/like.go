@@ -2,7 +2,6 @@ package controllers
 
 import (
 	"errors"
-	"go_web_app/dao/mysql"
 	"go_web_app/logic"
 	"go_web_app/models"
 
@@ -36,10 +35,8 @@ func PostLikeHandler(c *gin.Context) {
 	// 业务处理
 	err = logic.PostLike(p, id)
 	if err != nil {
-
-		if errors.Is(err, mysql.WrongPassword) {
-			ResponseError(c, CodeInvalidPassword)
-		} else if errors.Is(err, logic.ErrAleadyLike) || errors.Is(err, logic.ErrAleadyUnLike) {
+		// 可以把
+		if errors.Is(err, logic.ErrAleadyLike) || errors.Is(err, logic.ErrAleadyUnLike) {
 			ResponseErrorWithMsg(c, CodeInvalidParam, err.Error())
 		} else {
 			ResponseError(c, CodeServerBusy)
