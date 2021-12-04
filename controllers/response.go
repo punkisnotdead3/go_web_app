@@ -9,7 +9,8 @@ import (
 type Response struct {
 	Code ResCode     `json:"code"`
 	Msg  interface{} `json:"msg"`
-	Data interface{} `json:"data"`
+	// omitempty 代表 data 为null 就不返回了
+	Data interface{} `json:"data,omitempty"`
 }
 
 func ResponseError(c *gin.Context, code ResCode) {

@@ -36,6 +36,8 @@ func Setup(mode string) *gin.Engine {
 
 	v1.GET("/postlist", controllers.GetPostListHandler)
 
+	v1.POST("/like/", middleware.JWTAuthMiddleWare(), controllers.PostLikeHandler)
+
 	//验证jwt机制
 	v1.GET("/ping", middleware.JWTAuthMiddleWare(), func(context *gin.Context) {
 		// 这里post man 模拟的 将token auth-token

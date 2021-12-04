@@ -19,3 +19,15 @@ type ParamLogin struct {
 	UserName string `json:"username" binding:"required"`
 	Password string `json:"password" binding:"required"`
 }
+
+type ParamLikeData struct {
+	// 帖子id
+	PostId int64 `json:"post_id,string" binding:"required"`
+	// 1 点赞 -1 点踩
+	Direction int64 `json:"direction,string" binding:"required,oneof=1 -1"`
+}
+
+const (
+	DirectionLike   = 1
+	DirectionUnLike = -1
+)
