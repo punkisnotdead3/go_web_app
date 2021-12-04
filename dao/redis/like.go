@@ -1,7 +1,6 @@
 package redis
 
 import (
-	"go_web_app/models"
 	"go_web_app/utils"
 
 	"github.com/go-redis/redis"
@@ -42,18 +41,7 @@ func DoLike(postId int64, userId int64, direction int64) error {
 }
 
 func AddLike(postId int64, direction int64) error {
-	var score float64
-	if direction == models.DirectionLike {
-		score = 1
-	} else {
-		score = -1
-	}
-
-	value := redis.Z{
-		Score:  score,
-		Member: utils.Int64ToString(postId),
-	}
-	_, err := rdb.ZIncr(KeyLikeNumberZSet, value).Result()
+	_, err := rdb.ZIncrBy(KeyLikeNumberZSet, float64(direction), utils.Int64ToString(postId)).Result()
 	if err != nil {
 		zap.L().Error("AddLike error", zap.Error(err))
 		return err
