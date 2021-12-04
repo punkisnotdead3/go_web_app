@@ -28,10 +28,5 @@ func PostLike(postData *models.ParamLikeData, userId int64) error {
 	if err != nil {
 		return err
 	}
-
-	err = redis.AddLike(postData.PostId, postData.Direction)
-	if err != nil {
-		return err
-	}
 	return nil
 }

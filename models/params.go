@@ -23,7 +23,7 @@ type ParamLogin struct {
 type ParamLikeData struct {
 	// 帖子id
 	PostId int64 `json:"post_id,string" binding:"required"`
-	// 1 点赞 -1 点踩
+	// 1 点赞 -1 点踩 oneof 是限制这个值只能为多少
 	Direction int64 `json:"direction,string" binding:"required,oneof=1 -1"`
 }
 

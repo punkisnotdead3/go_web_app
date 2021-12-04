@@ -28,11 +28,14 @@ func CheckLike(postId int64, userId int64) (int64, bool) {
 
 // DoLike 点赞 或者点踩 记录这个用户对这个帖子的行为
 func DoLike(postId int64, userId int64, direction int64) error {
+	pipeLine := rdb.TxPipeline()
 	value := redis.Z{
 		Score:  float64(direction),
 		Member: utils.Int64ToString(userId),
 	}
-	_, err := rdb.ZAdd(getRedisKeyForLikeUserSet(postId), value).Result()
+	pipeLine.ZAdd(getRedisKeyForLikeUserSet(postId), value)
+	pipeLine.ZIncrBy(KeyLikeNumberZSet, float64(direction), utils.Int64ToString(postId))
+	_, err := pipeLine.Exec()
 	if err != nil {
 		zap.L().Error("doLike error", zap.Error(err))
 		return err
