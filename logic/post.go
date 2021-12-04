@@ -31,6 +31,7 @@ func CreatePost(post *models.Post) (msg string, err error) {
 func GetPostList2(params *models.ParamListData) (apiPostDetailList []*models.ApiPostDetail, err error) {
 	// 最热
 	if params.Order == models.OrderByHot {
+		// 先去redis 里面取 最新的数据
 		ids, err := redis.GetPostIdsByScore(params.PageSize, params.PageNum)
 		if err != nil {
 			return nil, err
@@ -43,7 +44,7 @@ func GetPostList2(params *models.ParamListData) (apiPostDetailList []*models.Api
 
 	} else if params.Order == models.OrderByTime {
 		//最新
-
+		return GetPostList(params.PageSize, params.PageNum)
 	}
 	return nil, nil
 }
@@ -56,29 +57,7 @@ func GetPostList(pageSize int64, pageNum int64) (apiPostDetailList []*models.Api
 	if err != nil {
 		return nil, err
 	}
-	apiPostDetailList = make([]*models.ApiPostDetail, 0, 2)
-	for _, post := range postList {
-		//再查 作者 名称
-		username, err := mysql.GetUserNameById(post.AuthorId)
-		if err != nil {
-			zap.L().Warn("no author ")
-			err = nil
-			return nil, err
-		}
-		//再查板块实体
-		community, err := GetCommunityById(post.CommunityId)
-		if err != nil {
-			zap.L().Warn("no community ")
-			err = nil
-			return nil, err
-		}
-		apiPostDetail := new(models.ApiPostDetail)
-		apiPostDetail.AuthorName = username
-		apiPostDetail.Community = community
-		apiPostDetail.Post = post
-		apiPostDetailList = append(apiPostDetailList, apiPostDetail)
-	}
-	return apiPostDetailList, nil
+	return rangeInitApiPostDetail(postList)
 }
 
 func rangeInitApiPostDetail(posts []*models.Post) (apiPostDetailList []*models.ApiPostDetail, err error) {

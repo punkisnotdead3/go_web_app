@@ -16,7 +16,6 @@ func GetPostListHandler2(c *gin.Context) {
 	// 校验下参数
 	if err := c.ShouldBindQuery(p); err != nil {
 		zap.L().Error("CreatePostHandler with invalid param", zap.Error(err))
-		// 因为有的错误 比如json格式不对的错误 是不属于validator错误的 自然无法翻译，所以这里要做类型判断
 		errs, ok := err.(validator.ValidationErrors)
 		if !ok {
 			ResponseError(c, CodeInvalidParam)
@@ -31,7 +30,6 @@ func GetPostListHandler2(c *gin.Context) {
 		return
 	}
 	ResponseSuccess(c, apiList)
-
 }
 
 func GetPostListHandler(c *gin.Context) {

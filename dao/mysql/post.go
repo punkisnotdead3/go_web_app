@@ -12,6 +12,7 @@ import (
 )
 
 func GetPostListByIds(ids []string) (postList []*models.Post, err error) {
+	//FIND_IN_SET 按照给定的顺序 来返回结果集
 	sqlStr := "select post_id,title,content,author_id,community_id,create_time,update_time" +
 		" from post where post_id in (?) order by FIND_IN_SET(post_id,?)"
 	query, args, err := sqlx.In(sqlStr, ids, strings.Join(ids, ","))
@@ -29,8 +30,9 @@ func GetPostListByIds(ids []string) (postList []*models.Post, err error) {
 
 func GetPostList(offset int64, pageSize int64) (posts []*models.Post, err error) {
 	zap.L().Info("GetPostList", zap.String("offset", strconv.FormatInt(offset, 10)), zap.String("pageSize", strconv.FormatInt(pageSize, 10)))
+	// 按照帖子的创建时间来排序
 	sqlStr := "select post_id,title,content,author_id,community_id,create_time,update_time " +
-		" from post limit ?,?"
+		" from post order by create_time desc  limit ?,? "
 	posts = make([]*models.Post, 0, pageSize)
 	err = db.Select(&posts, sqlStr, offset, pageSize)
 	if err != nil {
