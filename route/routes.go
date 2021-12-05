@@ -9,6 +9,9 @@ import (
 	"go.uber.org/zap"
 
 	"github.com/gin-gonic/gin"
+	gs "github.com/swaggo/gin-swagger"
+	 "github.com/swaggo/gin-swagger/swaggerFiles"
+	_ "go_web_app/docs" // 千万不要忘了导入把你上一步生成的docs
 )
 
 func Setup(mode string) *gin.Engine {
@@ -21,6 +24,10 @@ func Setup(mode string) *gin.Engine {
 
 	//v1 版本的路由
 	v1 := r.Group("/api/v1")
+
+	//swagger 接口文档
+	// http://localhost:8080/swagger/index.html 可以看到接口文档
+	r.GET("/swagger/*any", gs.WrapHandler(swaggerFiles.Handler))
 
 	// 注册
 	v1.POST("/register", controllers.RegisterHandler)

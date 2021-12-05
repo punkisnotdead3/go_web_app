@@ -13,6 +13,13 @@ import (
 	"github.com/gin-gonic/gin"
 )
 
+// LoginHandler 用户登录接口
+// @Router /api/v1/login [post]
+// @Summary 登录接口
+// @Accept application/json
+// @Produce application/json
+// @Param login body _RequestLogin true "登录请求需要上传的json"
+// @Success 200 {object} _ResponseLogin
 func LoginHandler(c *gin.Context) {
 	p := new(models.ParamLogin)
 

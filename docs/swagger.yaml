@@ -1,0 +1,48 @@
+definitions:
+  controllers._RequestLogin:
+    properties:
+      password:
+        description: 密码
+        type: string
+      username:
+        description: 用户名
+        type: string
+    type: object
+  controllers._ResponseLogin:
+    properties:
+      code:
+        description: 业务状态响应码
+        type: integer
+      data:
+        description: token
+        type: string
+      message:
+        description: 提示信息
+        type: string
+    type: object
+info:
+  contact: {}
+  description: go语言 初学者
+  title: go语言的bbs 服务端
+  version: "1.0"
+paths:
+  /api/v1/login:
+    post:
+      consumes:
+      - application/json
+      parameters:
+      - description: 登录请求需要上传的json
+        in: body
+        name: login
+        required: true
+        schema:
+          $ref: '#/definitions/controllers._RequestLogin'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/controllers._ResponseLogin'
+      summary: 登录接口
+swagger: "2.0"
