@@ -1,6 +1,7 @@
 package route
 
 import (
+	"github.com/gin-contrib/pprof"
 	"go_web_app/controllers"
 	"go_web_app/logger"
 	"go_web_app/middleware"
@@ -10,7 +11,7 @@ import (
 
 	"github.com/gin-gonic/gin"
 	gs "github.com/swaggo/gin-swagger"
-	 "github.com/swaggo/gin-swagger/swaggerFiles"
+	"github.com/swaggo/gin-swagger/swaggerFiles"
 	_ "go_web_app/docs" // 千万不要忘了导入把你上一步生成的docs
 )
 
@@ -58,5 +59,17 @@ func Setup(mode string) *gin.Engine {
 	r.GET("/", func(context *gin.Context) {
 		context.String(http.StatusOK, "ok")
 	})
+	r.LoadHTMLFiles("./html/dist/index.html")
+	r.Static("/css","./html/dist/css")
+	r.Static("/js","./html/dist/js")
+	r.Static("/img","./html/dist/img")
+
+	r.GET("/vue", func(context *gin.Context) {
+		context.HTML(http.StatusOK, "index.html", nil)
+	})
+
+	// 注册pprof 相关路由
+	pprof.Register(r)
+
 	return r
 }
