@@ -10,15 +10,15 @@ log:
   max_age: 30
   max_backups: 7
 mysql:
-  host: "127.0.0.1"
+  host: mysql-docker
   port: 3306
   user: "root"
-  password: "1234qwer"
+  password: "123456"
   dbname: "bbs"
   max_open_connection: 200
   max_idle_connection: 10
 redis:
-  host: "127.0.0.1"
+  host: redis-docker
   passowrd: ""
   port: 6379
   db: 0
